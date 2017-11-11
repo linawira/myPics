@@ -3,22 +3,22 @@ var express = require('express'),
     router = express.Router(),
     logger = require('../../config/logger'),
     mongoose = require('mongoose'),
-    mypics = mongoose.model('mypics');
+    Mypics = mongoose.model('mypics');
 
 module.exports = function (app, config) {
     app.use('/api', router);
     
-    router.get('/mypics/:userId', function (req, res, next){
-        logger.log('Find pics by Id', 'verbose');
+    router.get('/mypics/user/:userId', function (req, res, next){
+        logger.log('Get mypics for a user', 'verbose');
 
-        var query = mypics.find({userId:req.params.userId})
+        var query = Mypics.find({userId:req.params.userId})
         .sort(req.query.order)
         .exec()
         .then(result => {
            if(result && result.length) {
              res.status(200).json(result);
          } else {
-             res.status(404).json({message: "No pics"});
+             res.status(404).json({message: "No my pics"});
          }
         })
         .catch(err => {
@@ -27,15 +27,15 @@ module.exports = function (app, config) {
     });  
 
 
-    router.get('mypics/:mypicsId', function (req, res, next){
-        logger.log('Get My Pics List'+ req.params.userId, 'verbose');
+    router.get('/mypics/:mypicsId', function (req, res, next){
+        logger.log('Get My Pics List'+ req.params.mypicsId, 'verbose');
 
-        mypics.findById(req.params.todoId)
+        Mypics.findById(req.params.mypicsId)
                     .then(mypics => {
                         if(mypics){
                             res.status(200).json(mypics);
                         } else {
-                            res.status(404).json({message: "No pics found"});
+                            res.status(404).json({message: "No mypics found"});
                         }
                     })
                     .catch(error => {
@@ -43,10 +43,10 @@ module.exports = function (app, config) {
                     });
             });  
 
-    router.post('mypics/mypicsId', function(req, res, next){
+    router.post('/mypics', function(req, res, next){
         logger.log('Create mypics', 'verbose');
 
-        var mypics = new mypics(req.body);
+        var mypics = new Mypics(req.body);
         mypics.save()
        .then(result => {
            res.status(201).json(result);
@@ -56,14 +56,14 @@ module.exports = function (app, config) {
        });
     });  
     
-    router.put('mypics/mypicsId', function (req, res, next){
-        logger.log('Update todo'+ req.params.mypicsId, 'verbose');
+    router.put('/mypics/:mypicsId', function (req, res, next){
+        logger.log('Update mypics'+ req.params.mypicsId, 'verbose');
 
         
-        mypics.findOneAndUpdate({_id: req.params.userId}, 		
+        Mypics.findOneAndUpdate({_id: req.params.mypicsId}, 		
             req.body, {new:true, multi:false})
                 .then(mypics => {
-                    res.status(200).json(todo);
+                    res.status(200).json(mypics);
                 })
                 .catch(error => {
                     return next(error);
@@ -71,10 +71,10 @@ module.exports = function (app, config) {
     });
 
 
-    router.delete('mypics/mypicsId', function (req, res, next){
-        logger.log('Delete mypics'+ req.params.userId, 'verbose');
+    router.delete('/mypics/:mypicsId', function (req, res, next){
+        logger.log('Delete mypics'+ req.params.mypicsId, 'verbose');
 
-        mypics.remove({ _id: req.params.mypicsId })
+        Mypics.remove({ _id: req.params.mypicsId })
                 .then(mypics => {
                     res.status(200).json({msg: "mypics Deleted"});
                 })

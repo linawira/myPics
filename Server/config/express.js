@@ -7,7 +7,11 @@ var mongoose = require('mongoose');
 var bluebird = require('bluebird');
 var glob = require('glob');
 
+var cors = require('cors');
+
 module.exports = function (app, config) {
+
+  app.use(cors({origin: 'http://localhost:9000'}));
 
  logger.log("Loading Mongoose functionality");
  mongoose.Promise = require('bluebird');
@@ -16,8 +20,6 @@ module.exports = function (app, config) {
  db.on('error', function () {
    throw new Error('unable to connect to database at ' + config.db);
  });
-
-
 
   if(process.env.NODE_ENV !== 'test') {
     app.use(morgan('dev'));
@@ -45,13 +47,8 @@ module.exports = function (app, config) {
   
  var controllers = glob.sync(config.root + '/app/controllers/*.js');
    controllers.forEach(function (controller) {
-    require(controller);
+    require(controller)(app,config);
    });
-
-
-  require('../app/controllers/users')(app, config);
-  require('../app/controllers/mypics')(app, config);
-
 
   app.use(express.static(config.root + '/public'));
   
@@ -62,11 +59,15 @@ module.exports = function (app, config) {
     });
   
     app.use(function (err, req, res, next) {
-      logger.error(err.stack);
+      console.log(err);
+      if (process.env.NODE_ENV !== 'test') logger.log(err.stack,'error');
       res.type('text/plan');
-      res.status(500);
-      res.send('500 Sever Error');  
-    });
+      if(err.status){
+        res.status(err.status).send(err.message);
+      } else {
+        res.status(500).send('500 Sever Error');
+      }
+    });  
   
     logger.log("Starting application");
   

@@ -3,7 +3,7 @@ var Schema = Mongoose.Schema;
 
 var myMyPicsSchema = new Schema({
         userId: { type: Schema.Types.ObjectId, required: true },
-        todo: { type: String, requred: true },
+        mypics: { type: String, requred: true },
         description:{type: String},
         dateCreated: {type:Date, default:Date.now},
         dateDue:{type:Date, default:Date.now},

@@ -1,11 +1,15 @@
     import {inject} from 'aurelia-framework';
     import {Router} from 'aurelia-router';
     import { Users } from '../resources/data/users';    
+    import {AuthService} from 'aurelia-auth';  
     
-    @inject(Router,Users)
+    @inject(Router,Users,AuthService)
     export class Home {
-      constructor(router,users) {
+
+      constructor(router,users,auth) {
         this.router = router;
+        this.auth = auth;
+        this.loginError = '';     
         this.users = users;        
         this.message = 'Home';
         this.showLogin = true;        
@@ -33,7 +37,16 @@
         }        
         
     login(){
+        return this.auth.login(this.email, this.password)
+        .then(response => {
+        sessionStorage.setItem("user", JSON.stringify(response.user));
+        this.loginError = "";  
         this.router.navigate('list');
-        }
-    }
+     })
+        .catch(error => {
+         console.log(error);
+         this.loginError = "Invalid credentials.";
+   });
+};
 
+ }

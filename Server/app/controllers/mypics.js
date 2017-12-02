@@ -3,37 +3,57 @@ var express = require('express'),
     router = express.Router(),
     logger = require('../../config/logger'),
     mongoose = require('mongoose'),
-    Mypics = mongoose.model('mypics');
+    Mypic = mongoose.model('mypics');
+
+    passportService = require('../../config/passport'),
+    passport = require('passport'),
+
+    multer = require('multer'),
+    mkdirp = require('mkdirp');
+
+    var requireAuth = passport.authenticate('jwt', { session: false });
 
 module.exports = function (app, config) {
     app.use('/api', router);
+
+    var storage = multer.diskStorage({
+        destination: function (req, file, cb) {      
+    var path = config.uploads + req.params.userId + "/";
+            mkdirp(path, function(err) {
+                if(err){
+                    res.status(500).json(err);
+                } else {
+                    cb(null, path);
+                }
+            });
+        },
+        filename: function (req, file, cb) {
+            let fileName = file.originalname.split('.');   
+            cb(null, fileName[0] + new Date().getTime() + "." + fileName[fileName.length - 1]);
+        }
+      });
     
-    router.get('/mypics/user/:userId', function (req, res, next){
-        logger.log('Get mypics for a user', 'verbose');
+    router.get('/mypics/user/:userId', /*requireAuth,*/ function (req, res, next){
+        logger.log('Get MyPics for a user', 'verbose');
 
-        var query = Mypics.find({userId:req.params.userId})
-        .sort(req.query.order)
-        .exec()
-        .then(result => {
-           if(result && result.length) {
-             res.status(200).json(result);
-         } else {
-             res.status(404).json({message: "No my pics"});
-         }
-        })
-        .catch(err => {
-          return next(err);
+        Mypic.find ({userId: req.params.userId})
+        .then(mypics => {
+            if(mypics){
+                res.status(200).json (mypics);
+            } else {
+                return next (error);
+            }
         });
-    });  
 
+    });
 
-    router.get('/mypics/:mypicsId', function (req, res, next){
-        logger.log('Get My Pics List'+ req.params.mypicsId, 'verbose');
+    router.get('/mypics/:mypicId',requireAuth,  function (req, res, next){
+        logger.log('Get My Pics List'+ req.params.mypicId, 'verbose');
 
-        Mypics.findById(req.params.mypicsId)
-                    .then(mypics => {
-                        if(mypics){
-                            res.status(200).json(mypics);
+        Mypic.findById(req.params.mypicId)
+                    .then(mypic => {
+                        if(mypic){
+                            res.status(200).json(mypic);
                         } else {
                             res.status(404).json({message: "No mypics found"});
                         }
@@ -46,8 +66,8 @@ module.exports = function (app, config) {
     router.post('/mypics', function(req, res, next){
         logger.log('Create mypics', 'verbose');
 
-        var mypics = new Mypics(req.body);
-        mypics.save()
+        var mypic = new Mypic(req.body);
+        mypic.save()
        .then(result => {
            res.status(201).json(result);
        })
@@ -56,14 +76,14 @@ module.exports = function (app, config) {
        });
     });  
     
-    router.put('/mypics/:mypicsId', function (req, res, next){
-        logger.log('Update mypics'+ req.params.mypicsId, 'verbose');
+    router.put('/mypics/:mypicId', /*requireAuth,*/ function (req, res, next){
+        logger.log('Update mypics'+ req.params.mypicId, 'verbose');
 
         
-        Mypics.findOneAndUpdate({_id: req.params.mypicsId}, 		
+        Mypic.findOneAndUpdate({_id: req.params.mypicId}, 		
             req.body, {new:true, multi:false})
-                .then(mypics => {
-                    res.status(200).json(mypics);
+                .then(mypic => {
+                    res.status(200).json(mypic);
                 })
                 .catch(error => {
                     return next(error);
@@ -71,16 +91,43 @@ module.exports = function (app, config) {
     });
 
 
-    router.delete('/mypics/:mypicsId', function (req, res, next){
-        logger.log('Delete mypics'+ req.params.mypicsId, 'verbose');
+    router.delete('/mypics/:mypicId',/*requireAuth,*/  function (req, res, next){
+        logger.log('Delete mypic'+ req.params.mypicId, 'verbose');
 
-        Mypics.remove({ _id: req.params.mypicsId })
-                .then(mypics => {
-                    res.status(200).json({msg: "mypics Deleted"});
+        Mypic.remove({ _id: req.params.mypicId })
+                .then(user => {
+                    res.status(200).json({msg: "mypic Deleted"});
                 })
                 .catch(error => {
                     return next(error);
                 });
+    });
+
+    var upload = multer({ storage: storage });
+    
+    router.post('/mypics/upload/:userId/:mypicId', upload.any(), function(req, res, next){
+        logger.log('Upload file for mypic ' + req.params.mypicId + ' and ' + req.params.userId, 'verbose');
+        
+        Mypic.findById(req.params.mypicId, function(err, mypic){
+            if(err){ 
+                return next(err);
+            } else {     
+                if(req.files){
+                    mypic.file = {
+                        fileName : req.files[0].filename,
+                        originalName : req.files[0].originalname,
+                        dateUploaded : new Date()
+                    };
+                }           
+                mypic.save()
+                    .then(mypic => {
+                        res.status(200).json(mypic);
+                    })
+                    .catch(error => {
+                        return next(error);
+                    });
+            }
+        });
     });
   
 };

@@ -1,16 +1,23 @@
 var Mongoose = require('mongoose');
 var Schema = Mongoose.Schema;
 
-var myMyPicsSchema = new Schema({
+priorities = ['Low', 'Medium', 'High', 'Critical'];
+
+var myMypicSchema = new Schema({
         userId: { type: Schema.Types.ObjectId, required: true },
-        mypics: { type: String, requred: true },
+        mypic: { type: String, requred: true },
         description:{type: String},
         dateCreated: {type:Date, default:Date.now},
         dateDue:{type:Date, default:Date.now},
         completed: {type: Boolean, default: false},
-        file: {fileName: String, originalName: String},
+        priority: {type: String, enum: priorities},
+        file: {
+            fileName: { type: String},
+            originalName: {type: String},
+            dateUploaded: {type: Date, default: Date.now}
+        },
     });
     
     module.exports = 
-     Mongoose.model('mypics', myMyPicsSchema);
+     Mongoose.model('mypics', myMyPicSchema);
     

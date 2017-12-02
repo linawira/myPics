@@ -1,7 +1,9 @@
+var mongoose = require("mongoose"),
+User = require('../app/models/users');
+Mypic = require('../app/models/mypics');
+
 //During the test the env variable is set to test
 process.env.NODE_ENV = 'test';
-User = require('../app/models/users');
-Mypics = require('../app/models/mypics');
 
 //Require the dev-dependencies
 let chai = require('chai');
@@ -144,9 +146,9 @@ it('it should GET a user by the given id', (done) => {
 		
 		});
 
-describe('Mypics', () => {
+describe('Mypic', () => {
 			beforeEach((done) => { 
-				Mypics.remove({}, (err) => {
+				Mypic.remove({}, (err) => {
 					done();
 				});
 			});
@@ -160,29 +162,29 @@ describe('Mypics', () => {
 				USER_ID = user._id;
 			});
 			
-it('it should POST mypics', (done) => {
-			var mypics = {
+it('it should POST mypic', (done) => {
+			var mypic = {
 					"userId": USER_ID,
-					"mypics": "This is my mypics"
+					"mypic": "This is my mypic"
 				}       
 				chai.request(server)
 				.post('/api/mypics')
-                .send(mypics)
+                .send(mypic)
                 .end((err, res) => {            
                     res.should.have.status(201);
-                    res.body.should.have.property('mypics');
+                    res.body.should.have.property('mypic');
                     res.body.mypics.should.be.a('string');
-                    res.body.mypics.should.equal('This is my mypics');
+                    res.body.mypics.should.equal('This is my mypic');
                     done();
                 });
 		});
 
 it('it should GET a users mypics', (done) => {
-            var mypics = new Mypics({
+            var mypic = new Mypic({
                 "userId": USER_ID,
-                "mypics": "This is my mypics"
+                "mypic": "This is my mypic"
             })
-            mypics.save((err, mypics) => {      
+            mypic.save((err, mypic) => {      
                      chai.request(server)
                     .get('/api/mypics/user/' + USER_ID)
                     .end((err, res) => {            
@@ -194,63 +196,63 @@ it('it should GET a users mypics', (done) => {
             });
 		});
 		
-		it('it should GET a mypics', (done) => {
-			var mypics = new Mypics({
+		it('it should GET a mypic', (done) => {
+			var mypic = new Mypic({
 				"userId": USER_ID,
-				"mypics": "This is my mypics"
+				"mypic": "This is my mypic"
 			})
-					mypics.save((err, mypics) => {      
+					mypic.save((err, mypic) => {      
 					 chai.request(server)
-					.get('/api/mypics/' + mypics._id)
+					.get('/api/mypics/' + mypic._id)
 					.end((err, res) => {            
 						res.should.have.status(200);
 						res.body.should.be.a('object');
 						res.body.should.have.property('userId');
-						res.body.should.have.property('mypics');
+						res.body.should.have.property('mypic');
 						res.body.should.have.property('completed');
 						res.body.should.have.property('dateCreated');
-						res.body.should.have.property('_id').eql(mypics._id.toString());
+						res.body.should.have.property('_id').eql(mypic._id.toString());
 						done();
 					});
 			});
 		});
 
-		it('it should UPDATE a mypics', (done) => {
+		it('it should UPDATE a mypic', (done) => {
 			
-			var mypics = new Mypics({
+			var mypic = new Mypic({
 				"userId": USER_ID,
-				"mypics": "This is my mypics",
+				"mypic": "This is my mypic",
 				"description": "This is a description"
 			})
 
-						mypics.save((err, mypics) => {
+						mypic.save((err, mypic) => {
 						chai.request(server)
-						.put('/api/mypics/' + mypics._id)
+						.put('/api/mypics/' + mypic._id)
 						.send({
-							"_id": mypics._id,
+							"_id": mypic._id,
 							"userId": USER_ID,
-							"mypics": "Get it done!",
+							"mypic": "Get it done!",
 							"description": "I don't need a description",
 							})
 						.end((err, res) => {
 							res.should.have.status(200);
 							res.body.should.be.a('object');
-							res.body.should.have.property('mypics').eql('Get it done!');
+							res.body.should.have.property('mypic').eql('Get it done!');
 							res.body.should.have.property('description').eql("I don't need a description");
 							done();
 						});
 				});
 			}); 
 
-			it('it should DELETE a mypics given the id', (done) => {
-				var mypics = new Mypics({
+			it('it should DELETE a mypic given the id', (done) => {
+				var mypic = new Mypic({
 					"userId": USER_ID,
-					"mypics": "This is my mypics",
+					"mypic": "This is my mypic",
 					"description": "This is a description"
 				})
-				mypics.save((err, mypics) => {
+				mypic.save((err, mypic) => {
 					chai.request(server)
-					.delete('/api/mypics/' + mypics.id)
+					.delete('/api/mypics/' + mypic.id)
 					.end((err, res) => {
 					res.should.have.status(200);
 								done();

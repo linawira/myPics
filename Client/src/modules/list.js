@@ -45,7 +45,7 @@
 
         completeMypic(mypic){
                 mypic.completed = !mypic.completed;
-                this.mmypicObj = mypic;
+                this.mypicObj = mypic;
                 this.saveMypic();
             }
 

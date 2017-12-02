@@ -2,30 +2,30 @@ import {inject} from 'aurelia-framework';
 import {DataServices} from './data-services';
 
 @inject(DataServices)
-export class ToDos {
+export class MyPics {
     constructor(data) {
                 this.data = data;
-                this.TODO_SERVICE = 'todos';
-                this.todosArray= new Array ();
+                this.MYPIC_SERVICE = 'mypics';
+                this.mypicsArray= new Array ();
          }
 
-async getUserTodos(id){
-    let response = await this.data.get(this.TODO_SERVICE + "/user/" + id);
+async getUserMypics(id){
+    let response = await this.data.get(this.MYPIC_SERVICE + "/user/" + id);
     if(!response.error && !response.message){
-        this.todosArray = response;
+        this.mypicsArray = response;
     }
 } 
 
-async save(todo){
-    if(todo){
-    if(!todo._id){
-    let serverResponse = await this.data.post(todo, this.TODO_SERVICE);
+async save(mypic){
+    if(mypic){
+    if(!mypic._id){
+    let serverResponse = await this.data.post(mypic, this.MYPIC_SERVICE);
     if(!serverResponse.error){
-        this.todosArray.push(serverResponse);
+        this.mypicsArray.push(serverResponse);
     }
     return serverResponse;
         } else {
-                let serverResponse = await this.data.put(todo, this.TODO_SERVICE + "/" + todo._id);
+                let serverResponse = await this.data.put(mypic, this.MYPIC_SERVICE + "/" + mypic._id);
                 if(!serverResponse.error){
                     // this.updateArray(response);
     // this.todosArray.forEach(todo => {
@@ -38,23 +38,23 @@ async save(todo){
     
     }
 
-async deleteTodo(id){
-    let serverResponse = await this.data.delete(this.TODO_SERVICE + "/" + id);
+async deleteMypic(id){
+    let serverResponse = await this.data.delete(this.MYPIC_SERVICE + "/" + id);
     if(!serverResponse.error){
-        for(let i = 0; i < this.todosArray.length; i++){
-            if(this.todosArray[i]._id === id){
-                this.todosArray.splice(i,1);
+        for(let i = 0; i < this.mypicsArray.length; i++){
+            if(this.mypicsArray[i]._id === id){
+                this.mypicsArray.splice(i,1);
             }
         }
     }
 }   
 
-async uploadFile(files, userId, todoId){
+async uploadFile(files, userId, mypicId){
             let formData = new FormData();
           files.forEach((item, index) => {
         formData.append("file" + index, item);
             });
-        let serverResponse = await this.data.uploadFiles(formData, this.TODO_SERVICE +"/upload/" + userId + "/" + todoId);
+        let serverResponse = await this.data.uploadFiles(formData, this.MYPIC_SERVICE +"/upload/" + userId + "/" + mypicId);
         return serverResponse;
     }
     

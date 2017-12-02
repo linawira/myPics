@@ -63,7 +63,7 @@ module.exports = function (app, config) {
       if(err.status){
         res.status(err.status).send(err.message);
       } else {
-        res.status(500).send('500 Sever Error');
+        res.status(500).send('500 Server Error');
       }
     });  
   

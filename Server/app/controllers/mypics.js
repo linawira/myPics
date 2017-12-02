@@ -3,7 +3,7 @@ var express = require('express'),
     router = express.Router(),
     logger = require('../../config/logger'),
     mongoose = require('mongoose'),
-    Mypic = mongoose.model('mypics');
+    Mypic = mongoose.model('mypics'),
 
     passportService = require('../../config/passport'),
     passport = require('passport'),

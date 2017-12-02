@@ -3,7 +3,7 @@ var Schema = Mongoose.Schema;
 
 priorities = ['Low', 'Medium', 'High', 'Critical'];
 
-var myMypicSchema = new Schema({
+var myPicSchema = new Schema({
         userId: { type: Schema.Types.ObjectId, required: true },
         mypic: { type: String, requred: true },
         description:{type: String},
@@ -19,5 +19,5 @@ var myMypicSchema = new Schema({
     });
     
     module.exports = 
-     Mongoose.model('mypics', myMyPicSchema);
+     Mongoose.model('mypics', myPicSchema);
     

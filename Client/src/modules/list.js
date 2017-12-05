@@ -1,20 +1,22 @@
     import {inject} from 'aurelia-framework';
     import {Router} from 'aurelia-router';
-    import {MyPics} from '../resources/data/mypics';    
+    import {MyPics} from '../resources/data/mypics';   
+    import {Photos} from '../resources/data/photos';  
     import { AuthService } from 'aurelia-auth';    
     
-    @inject(Router, AuthService, MyPics)
+    @inject(Router, AuthService, MyPics, Photos)
     export class List {
 
-      constructor(router,auht,mypics) {
+      constructor(router,auth,mypics, photos) {
         this.router = router;
         this.mypics = mypics;
+        this.photos = photos;
         this.auth = auth;
     
         this.user = JSON.parse(sessionStorage.getItem('user'));
-        this.title = "Lina Has Things ToDo!"
+        this.title = "My Pictures"
         this.priorities = ['Low', 'Medium', 'High', 'Critical'];
-        this.showList = true;
+        this.showList = 'mypicList';
         this.showCompleted = false;
 
       }
@@ -29,17 +31,26 @@
             description: "",
             dateDue: new Date(),
             userId: this.user._id,
-            priority: this.priorities[1]
+            priority: this.priorities[0]
         }
-        this.showList = false;      
+        // this.showList = false;      
+        this.showList = 'mypicForm'; 
+    }
+
+    async showPhoto(mypic){   
+       
+        await this.photos.getPhoto(mypic._id);
+             
+        this.showList = 'photosList'; 
     }
 
     editMypic(mypic){
                 this.mypicObj = mypic;
-                this. showList = false;
+                // this. showList = false;
+                this. showList = 'mypicForm';
             }
 
-       deleteMyPic(mypic){
+    deleteMypic(mypic){
                 this.mypics.deleteMypic(mypic._id);
             }
 
@@ -75,12 +86,12 @@
                                     this.filesToUpload = [];
                                 }                     
             }
-            this.showList = true;
+            this.showList = 'mypicList';
         }
     }
 
     back(){
-        this.showlist=true;
+        this.showList='mypicList';
     }
     
       logout(){

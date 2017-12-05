@@ -1,6 +1,11 @@
 <template>
     
-        <compose show.bind="showList" view="./components/mypicList.html"></compose>
-        <compose show.bind="!showList" view="./components/mypicForm.html"></compose>
+        <!-- <compose show.bind="showList" view="./components/mypicList.html"></compose>
+        <compose show.bind="!showList" view="./components/mypicForm.html"></compose> -->
     
+        <compose show.bind="showList== 'mypicList'" view="./components/mypicList.html"></compose>
+        <compose show.bind="showList== 'mypicForm'" view="./components/mypicForm.html"></compose>
+        <compose show.bind="showList== 'photoList'" view="./components/photosList.html"></compose>
+        <compose show.bind="showList== 'photoForm'" view="./components/photosForm.html"></compose>
+       
 </template>

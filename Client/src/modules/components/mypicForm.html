@@ -7,11 +7,11 @@
             </div>  
             <form>
                 <div class="form-group topMargin">
-                      <label for="mypicInput">Mypic *</label>
+                      <label for="mypicInput">Gallery Name *</label>
                       <input value.bind="mypicObj.mypic" type="text" class="form-control" id="mypicInput" aria-describedby="mypicHelp" 
-                        placeholder="Enter MyPic">
+                        placeholder="Enter Gallery Name">
                       <small id="mypicHelp" class="form-text text-muted">
-                        A short name for the MyPic.</small>
+                        A short name for the gallery.</small>
                 </div>
                 <div class="form-group">
                     <label for="descriptionInput">Description</label>
@@ -29,26 +29,26 @@
                                 <option repeat.for="priority of priorities" value.bind="priority">
                         ${priority}</option>
                             </select>
-                            <small id="priorityHelp" class="form-text text-muted">How urgent is this?</small>
+                            <small id="priorityHelp" class="form-text text-muted">How important is this?</small>
                         </div>      
                         <div class="form-group">
-                            <label for="dueDateInput">Due Date *</label>
-                            <flat-picker value.bind ="mypicObj.dateDue"></flat-picker>
-                            <small id="dueDateHelp" class="form-text text-muted">
-                                    The date to MyPic is due.</small>
+                            <label for="createDateInput">Date Created *</label>
+                            <flat-picker value.bind ="mypicObj.dateCreate"></flat-picker>
+                            <small id="createDateHelp" class="form-text text-muted">
+                                    The date to gallery is created.</small>
                                     </div>  
-                                    <button click.trigger="saveMypic()" class="btn btn-primary topMargin">Save</button>
+                                    
                                 </form>
                         </div>
                         <div class="row">
                                 <div class="col">
                                     <label class="btn btn-secondary">
-                                            Browse for files&hellip; <input type="file" 
+                                            Browse for photos&hellip; <input type="file" 
                                             style="display: none;" 
                                             change.delegate="changeFiles()" files.bind="files">
                                     </label>
                                     <small id="fileHelp" class="form-text text-muted">
-                                            Upload any files that will be useful.</small>
+                                            Upload any photos.</small>
                                 </div>  
                                 <div class="col-8">
                                     <ul>
@@ -59,5 +59,6 @@
                                     </ul>
                                 </div>
                             </div>    
+                            <button click.trigger="saveMypic()" class="btn btn-primary topMargin">Save</button>
                             </template>
                     

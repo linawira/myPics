@@ -1,8 +1,11 @@
 <template>
-         
+    <head>
+            <style type="text/css">body {background-color:rgb(153, 223, 213);}</style>     
+    </head>     
          <h1 class="leftMargin"> My Pictures</h1>
 
         <compose show.bind="showLogin" view="./components/login.html"></compose>
         <compose show.bind="!showLogin" view="./components/register.html"></compose>
+    
     </template>
     

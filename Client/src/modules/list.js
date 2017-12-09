@@ -12,12 +12,12 @@
         this.mypics = mypics;
         this.photos = photos;
         this.auth = auth;
-    
+        this.message ='List';
         this.user = JSON.parse(sessionStorage.getItem('user'));
-        this.title = "My Pictures"
-        this.priorities = ['Low', 'Medium', 'High', 'Critical'];
+        // this.title = "My Pictures"
+        // this.priorities = ['Low', 'Medium', 'High', 'Critical'];
         this.showList = 'mypicList';
-        this.showCompleted = false;
+        // this.showCompleted = false;
 
       }
 
@@ -29,19 +29,20 @@
         this.mypicObj = {
             mypics: "",
             description: "",
-            dateDue: new Date(),
+            dateCreated: new Date(),
             userId: this.user._id,
-            priority: this.priorities[0]
+            // priority: this.priorities[0]
         }
         // this.showList = false;      
         this.showList = 'mypicForm'; 
     }
 
-    async showPhoto(mypic){   
-       
-        await this.photos.getPhoto(mypic._id);
-             
-        this.showList = 'photosList'; 
+    createPhotos (){
+        this.mypicObj ={
+            userId: this.user._id,
+            Id: this.selectedphoto
+        }
+        this.showList = 'photosForm';
     }
 
     editMypic(mypic){
@@ -50,19 +51,28 @@
                 this. showList = 'mypicForm';
             }
 
+    editPhotos(mypic){
+        this.mypicObj = mypic;
+        this.showList = 'photosForm';
+    }        
+
     deleteMypic(mypic){
                 this.mypics.deleteMypic(mypic._id);
             }
 
-        completeMypic(mypic){
-                mypic.completed = !mypic.completed;
-                this.mypicObj = mypic;
-                this.saveMypic();
+            deletePhotos(mypic){
+                this.photos.deleteMypic(mypic._id);
             }
 
-         toggleShowCompleted(){
-                this.showCompleted = !this.showCompleted;
-            }
+        // completeMypic(mypic){
+        //         mypic.completed = !mypic.completed;
+        //         this.mypicObj = mypic;
+        //         this.saveMypic();
+        //     }
+
+        //  toggleShowCompleted(){
+        //         this.showCompleted = !this.showCompleted;
+        //     }
           
         changeFiles(){
                   this.filesToUpload = new Array(); 
@@ -90,8 +100,34 @@
         }
     }
 
+    async savePhotos(){
+        if(this.mypicObj){       
+            let response = await this.photos.save(this.mypicObj);
+            if(response.error){
+                alert("There was an error creating the MyPics");
+            } else {
+                  var mypicId = response._id;
+                                if(this.filesToUpload && this.filesToUpload.length){
+                                    await this.photos.uploadFile(this.filesToUpload, this.user._id, mypicId);
+                                    this.filesToUpload = [];
+                                }                     
+            }
+            this.showList = 'photosList';
+        }
+    }
+
+    async showPhotos (mypic){
+        this.selectedgallery = mypic._id;
+        await this.photos.getPhotos(mypic._id)
+        this.showList ='photosList';
+    }
+
     back(){
         this.showList='mypicList';
+    }
+
+    backPhotos(){
+        this.showList='photosList';
     }
     
       logout(){

@@ -6,10 +6,17 @@ export class Photos {
     constructor(data) {
                 this.data = data;
                 this.PHOTO_SERVICE = 'photos';
-                this.photosArray= new Array ();
+                this.photoArray= new Array ();
          }
 
-async getUserPhotos(id){
+         async getPhotos(id){
+            let response = await this.data.get(this.PHOTO_SERVICE + "/" + id);
+            if(!response.error && !response.message){
+                this.photoArray = response;
+            }
+        }         
+
+async getUserPhoto(id){
     let response = await this.data.get(this.PHOTO_SERVICE + "/user/" + id);
     if(!response.error && !response.message){
         this.photosArray = response;
@@ -21,7 +28,7 @@ async save(photo){
     if(!photo._id){
     let serverResponse = await this.data.post(photo, this.PHOTO_SERVICE);
     if(!serverResponse.error){
-        this.photosArray.push(serverResponse);
+        this.photoArray.push(serverResponse);
     }
     return serverResponse;
         } else {
@@ -41,9 +48,9 @@ async save(photo){
 async deletePhoto(id){
     let serverResponse = await this.data.delete(this.PHOTO_SERVICE + "/" + id);
     if(!serverResponse.error){
-        for(let i = 0; i < this.photosArray.length; i++){
-            if(this.photosArray[i]._id === id){
-                this.photosArray.splice(i,1);
+        for(let i = 0; i < this.photoArray.length; i++){
+            if(this.photoArray[i]._id === id){
+                this.photoArray.splice(i,1);
             }
         }
     }

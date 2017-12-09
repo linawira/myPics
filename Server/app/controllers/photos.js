@@ -3,7 +3,7 @@ var express = require('express'),
     router = express.Router(),
     logger = require('../../config/logger'),
     mongoose = require('mongoose'),
-    Mypic = mongoose.model('mypics'),
+    Photo = mongoose.model('photos'),
 
     passportService = require('../../config/passport'),
     passport = require('passport'),
@@ -33,29 +33,34 @@ module.exports = function (app, config) {
         }
       });
     
-    router.get('/mypics/user/:userId', /*requireAuth,*/ function (req, res, next){
-        logger.log('Get Gallery for a user', 'verbose');
+    router.get('/photos/user/:userId', /*requireAuth,*/ function (req, res, next){
+        logger.log('Get photos for a user', 'verbose');
 
-        Mypic.find ({userId: req.params.userId})
-        .then(mypics => {
-            if(mypics){
-                res.status(200).json (mypics);
+        var query = Photo.find ({userId: req.params.photoId})
+        .sort (req.query.order)
+        .exec ()
+        .then(result => {
+            if(result && result.length){
+                res.status(200).json (result);
             } else {
-                return next (error);
+                res.status (404).json ({message:"No Pictures"});
             }
+        })
+        .catch(err => {
+            return next (err);
         });
-
     });
 
-    router.get('/mypics/:mypicId',requireAuth,  function (req, res, next){
-        logger.log('Get Gallery List'+ req.params.mypicId, 'verbose');
 
-        Mypic.findById(req.params.mypicId)
-                    .then(mypic => {
-                        if(mypic){
-                            res.status(200).json(mypic);
+    router.get('/photos', /*requireAuth,*/  function (req, res, next){
+        logger.log('Get User','verbose');
+
+        Photo.find()
+                    .then(photo => {
+                        if(photo){
+                            res.status(200).json(photo);
                         } else {
-                            res.status(404).json({message: "No gallery found"});
+                            res.status(404).json({message: "No user found"});
                         }
                     })
                     .catch(error => {
@@ -63,11 +68,27 @@ module.exports = function (app, config) {
                     });
             });  
 
-    router.post('/mypics', function(req, res, next){
-        logger.log('Create gallery', 'verbose');
+    router.get('/photos/:photoId',/*requireAuth,*/  function (req, res, next){
+        logger.log('Get User'+ req.params.photoId, 'verbose');
 
-        var mypic = new Mypic(req.body);
-        mypic.save()
+        Photo.findById(req.params.photoId)
+                    .then(photo => {
+                        if(photo){
+                            res.status(200).json(photo);
+                        } else {
+                            res.status(404).json({message: "No user found"});
+                        }
+                    })
+                    .catch(error => {
+                        return next(error);
+                    });
+            });  
+
+    router.post('/photos', function(req, res, next){
+        logger.log('Create a photo', 'verbose');
+
+        var photo = new Photo(req.body);
+        photo.save()
        .then(result => {
            res.status(201).json(result);
        })
@@ -76,14 +97,14 @@ module.exports = function (app, config) {
        });
     });  
     
-    router.put('/mypics/:mypicId', /*requireAuth,*/ function (req, res, next){
-        logger.log('Update gallery'+ req.params.mypicId, 'verbose');
+    router.put('/photos/:photoId', /*requireAuth,*/ function (req, res, next){
+        logger.log('Update photos with id photoid'+ req.params.photoId, 'verbose');
 
         
-        Mypic.findOneAndUpdate({_id: req.params.mypicId}, 		
+        Photo.findOneAndUpdate({_id: req.params.photoId}, 		
             req.body, {new:true, multi:false})
-                .then(mypic => {
-                    res.status(200).json(mypic);
+                .then(photo => {
+                    res.status(200).json(photo);
                 })
                 .catch(error => {
                     return next(error);
@@ -91,12 +112,12 @@ module.exports = function (app, config) {
     });
 
 
-    router.delete('/mypics/:mypicId',/*requireAuth,*/  function (req, res, next){
-        logger.log('Delete gallery'+ req.params.mypicId, 'verbose');
+    router.delete('/photos/:photoId',/*requireAuth,*/  function (req, res, next){
+        logger.log('Delete photo with id photoid'+ req.params.photoId, 'verbose');
 
-        Mypic.remove({ _id: req.params.mypicId })
-                .then(user => {
-                    res.status(200).json({msg: "Gallery Deleted"});
+        Photo.remove({ _id: req.params.photoId })
+                .then(photo => {
+                    res.status(200).json({msg: "Photo Deleted"});
                 })
                 .catch(error => {
                     return next(error);
@@ -105,23 +126,23 @@ module.exports = function (app, config) {
 
     var upload = multer({ storage: storage });
     
-    router.post('/mypics/upload/:userId/:mypicId', upload.any(), function(req, res, next){
-        logger.log('Upload photos for gallery ' + req.params.mypicId + ' and ' + req.params.userId, 'verbose');
+    router.post('/photos/upload/:userId/:photoId', upload.any(), function(req, res, next){
+        logger.log('Upload photos for gallery ' + req.params.photoId + ' and ' + req.params.userId, 'verbose');
         
-        Mypic.findById(req.params.mypicId, function(err, mypic){
+        Photo.findById(req.params.photoId, function(err, photo){
             if(err){ 
                 return next(err);
             } else {     
                 if(req.files){
-                    mypic.file = {
+                    photo.file = {
                         fileName : req.files[0].filename,
                         originalName : req.files[0].originalname,
                         dateUploaded : new Date()
                     };
                 }           
-                mypic.save()
-                    .then(mypic => {
-                        res.status(200).json(mypic);
+                photo.save()
+                    .then(photo => {
+                        res.status(200).json(photo);
                     })
                     .catch(error => {
                         return next(error);

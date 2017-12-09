@@ -22,7 +22,7 @@
                     A longer description if required.</small>
                 </div>
         
-        <div class="form-group">
+        <!-- <div class="form-group">
                             <label for="priorityInput">Priority</label>
                             <select value.bind="mypicObj.priority" class="form-control" 
                         id="exampleFormControlSelect2">
@@ -30,7 +30,8 @@
                         ${priority}</option>
                             </select>
                             <small id="priorityHelp" class="form-text text-muted">How important is this?</small>
-                        </div>      
+                        </div>       -->
+
                         <div class="form-group">
                             <label for="createDateInput">Date Created *</label>
                             <flat-picker value.bind ="mypicObj.dateCreate"></flat-picker>
@@ -40,7 +41,7 @@
                                     
                                 </form>
                         </div>
-                        <div class="row">
+                        <!-- <div class="row">
                                 <div class="col">
                                     <label class="btn btn-secondary">
                                             Browse for photos&hellip; <input type="file" 
@@ -57,7 +58,7 @@
                                             class="pull-right"><i class="fa fa-trash" aria-hidden="true">
                                             </i></span></li>
                                     </ul>
-                                </div>
+                                </div> -->
                             </div>    
                             <button click.trigger="saveMypic()" class="btn btn-primary topMargin">Save</button>
                             </template>

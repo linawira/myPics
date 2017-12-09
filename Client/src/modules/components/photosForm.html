@@ -21,4 +21,24 @@
                             <small id="descriptionHelp" class="form-text text-muted">
                             A longer description if required.</small>
                         </div>
+                        <div class="row">
+                                <div class="col">
+                                    <label class="btn btn-secondary">
+                                            Browse for photos&hellip; <input type="file" 
+                                            style="display: none;" 
+                                            change.delegate="changeFiles()" files.bind="files">
+                                    </label>
+                                    <small id="fileHelp" class="form-text text-muted">
+                                            Upload any photos.</small>
+                                </div>  
+                                <div class="col-8">
+                                    <ul>
+                                        <li repeat.for="file of filesToUpload" class="list-group-item">
+                                            ${file.name}<span click.delegate="removeFile($index)" 
+                                            class="pull-right"><i class="fa fa-trash" aria-hidden="true">
+                                            </i></span></li>
+                                    </ul>
+                                </div> -->
+                            </div>    
+                            <button click.trigger="saveMypic()" class="btn btn-primary topMargin">Save</button>
 </template>

@@ -41,9 +41,20 @@
                                         <!-- <tr class="${mypic.priority === 'Critical' ? 'table-secondary' : ' '} "
                                         repeat.for = "mypic of mypics.mypicsArray|completed:showCompleted"> -->
                                         <!-- <th><span><i click.trigger="back()" class="fa fa-arrow-left fa-lg" aria-hidden="true">${mypic.mypic}</i></span></th> -->
-                                          
-                                        <td><a href="http://localhost:5000/uploads/${user._id}/${photo.file.fileName}" 
-                                                target="_blank">${photo.file.originalName}</a></td>
+                                       
+
+                                        <td class ="img">
+                                                
+                                                             
+                                            <a href="http://localhost:5000/uploads/${user._id}/${photo.file.fileName}" 
+                                                target="_blank">
+                                                <img src= "http://localhost:5000/uploads/${user._id}/${photo.file.fileName}" alt=${photo.file.originalName} style="width:150px">
+                                            </a>
+                                            
+                                            
+                                        </td>
+
+
                                             <!-- <td>${mypic.dateCreated|dateFormat}</td>
                                             <td>${mypic.priority}</td> -->
                                             <!-- <td><a href="http://localhost:5000/uploads/${user._id}/${mypic.file.fileName}" 

@@ -61,7 +61,7 @@
             }
 
             deletePhotos(mypic){
-                this.photos.deleteMypic(mypic._id);
+                this.photos.deletePhoto(mypic._id);
             }
 
         // completeMypic(mypic){

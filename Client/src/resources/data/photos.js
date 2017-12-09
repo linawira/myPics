@@ -6,7 +6,7 @@ export class Photos {
     constructor(data) {
                 this.data = data;
                 this.PHOTO_SERVICE = 'photos';
-                this.photoArray= new Array ();
+                this.photoArray= [];
          }
 
          async getPhotos(id){
@@ -19,7 +19,7 @@ export class Photos {
 async getUserPhoto(id){
     let response = await this.data.get(this.PHOTO_SERVICE + "/user/" + id);
     if(!response.error && !response.message){
-        this.photosArray = response;
+        this.photoArray = response;
     }
 } 
 

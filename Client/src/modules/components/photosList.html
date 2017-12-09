@@ -20,13 +20,16 @@
                                         <i click.trigger="logout()"     class="fa fa-sign-out fa-lg" aria-hidden="true"></i></span>
                                         <span class=" rightMargin pull-right">
                                         <i click.trigger="createPhotos()" class="fa fa-plus fa-lg" aria-hidden="true"></i></span>
+                                        <span class = " rightMargin pull-right" >
+                                        <i click.trigger="back()" class="fa fa-arrow-left fa-lg" aria-hidden="true"></i></span>
                                     </span>
                                 </div>
                     <div show.bind="photos.photoArray.length">
                             <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Photo Name</th>
+                                        
+                                            <th>Photo</th>
                                             <!-- <th>Date Created</th>
                                             <th>Priority</th> -->
                                             <!-- <th>Photos</th> -->
@@ -38,7 +41,8 @@
                                         <!-- <tr class="${mypic.priority === 'Critical' ? 'table-secondary' : ' '} "
                                         repeat.for = "mypic of mypics.mypicsArray|completed:showCompleted"> -->
                                         <!-- <th><span><i click.trigger="back()" class="fa fa-arrow-left fa-lg" aria-hidden="true">${mypic.mypic}</i></span></th> -->
-                                            <td><a href="http://localhost:5000/uploads/${user._id}/${photo.file.fileName}" 
+                                          
+                                        <td><a href="http://localhost:5000/uploads/${user._id}/${photo.file.fileName}" 
                                                 target="_blank">${photo.file.originalName}</a></td>
                                             <!-- <td>${mypic.dateCreated|dateFormat}</td>
                                             <td>${mypic.priority}</td> -->

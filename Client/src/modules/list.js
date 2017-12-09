@@ -117,7 +117,7 @@
     }
 
     async showPhotos (mypic){
-        this.selectedgallery = mypic._id;
+        this.selectedphoto = mypic._id;
         await this.photos.getPhotos(mypic._id)
         this.showList ='photosList';
     }

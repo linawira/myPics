@@ -2,7 +2,7 @@ var Mongoose = require('mongoose');
 var Schema = Mongoose.Schema;
 
 var photoSchema = new Schema({
-        Id: { type: Schema.Types.ObjectId, required: true },
+        Id: { type: Schema.Types.ObjectId, required: false },
         // photo: { type: String, requred: true },
         // description:{type: String},
         // dateCreated: {type:Date, default:Date.now},

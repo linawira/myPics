@@ -69,14 +69,14 @@ module.exports = function (app, config) {
             });  
 
     router.get('/photos/:photoId',/*requireAuth,*/  function (req, res, next){
-        logger.log('Get User'+ req.params.photoId, 'verbose');
+        logger.log('Get Photo'+ req.params.photoId, 'verbose');
 
-        Photo.findById(req.params.photoId)
+        Photo.find({Id:req.params.photoId})
                     .then(photo => {
                         if(photo){
                             res.status(200).json(photo);
                         } else {
-                            res.status(404).json({message: "No user found"});
+                            res.status(404).json({message: "No photo found"});
                         }
                     })
                     .catch(error => {
